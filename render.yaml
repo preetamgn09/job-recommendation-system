@@ -76,13 +76,14 @@ services:
       - key: JOB_SERVICE_URL
         sync: false
 
-  # ── Event Service (Background Worker) ───────────────────────
-  - type: worker
+  # ── Event Service (Web Service with background consumer) ─────
+  - type: web
     name: jobflow-event-service
     runtime: docker
     dockerfilePath: event-service/Dockerfile
     dockerContext: .
     plan: free
+    healthCheckPath: /health
     envVars:
       - key: MONGO_URL
         sync: false
@@ -94,3 +95,4 @@ services:
         sync: false
       - key: RECOMMENDATION_SERVICE_URL
         sync: false
+

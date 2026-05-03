@@ -1,18 +1,22 @@
 """
 Event Service — main entry point.
 
-Connects to RabbitMQ and starts consuming events from configured queues.
+Runs as a web service (for Render free tier compatibility) with a background
+RabbitMQ consumer task. The HTTP server provides health checks while the
+background task processes events.
 """
 import asyncio
+import os
 import aio_pika
+from aiohttp import web
 from app.config import settings
 from app.database import connect_db
 from app.consumers import handle_user_activity, handle_reco_invalidate
 
 
-async def main():
-    """Start the event consumer service."""
-    print("🚀 Event Service starting...")
+async def start_consumer():
+    """Start the RabbitMQ consumer in the background."""
+    print("🚀 Event Consumer starting...")
 
     # Connect to MongoDB
     await connect_db()
@@ -55,14 +59,37 @@ async def main():
 
     print("🎯 Event Service is running and consuming events...")
 
-    # Keep the service running
+
+# ── Health check HTTP server ─────────────────────────────────
+
+async def health_handler(request):
+    return web.json_response({"status": "healthy", "service": "event-service"})
+
+
+async def on_startup(app):
+    """Start the RabbitMQ consumer as a background task."""
+    app["consumer_task"] = asyncio.create_task(start_consumer())
+
+
+async def on_cleanup(app):
+    """Cancel the consumer task on shutdown."""
+    app["consumer_task"].cancel()
     try:
-        await asyncio.Future()
+        await app["consumer_task"]
     except asyncio.CancelledError:
         pass
-    finally:
-        await connection.close()
+
+
+def create_app():
+    app = web.Application()
+    app.router.add_get("/health", health_handler)
+    app.router.add_get("/", health_handler)
+    app.on_startup.append(on_startup)
+    app.on_cleanup.append(on_cleanup)
+    return app
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    port = int(os.environ.get("PORT", 8004))
+    app = create_app()
+    web.run_app(app, host="0.0.0.0", port=port)

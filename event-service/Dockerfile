@@ -8,4 +8,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY common/ ./common/
 COPY event-service/app/ ./app/
 
-CMD ["python", "-m", "app.main"]
+EXPOSE 8004
+
+# Run as web service with health check endpoint
+CMD python -m app.main
