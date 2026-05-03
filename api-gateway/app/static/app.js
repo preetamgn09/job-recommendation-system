@@ -97,31 +97,79 @@ document.getElementById('btn-view-architecture').addEventListener('click', () =>
     checkHealth();
 });
 
+// ── File Upload Logic ───────────────────────────────────────
+const dropzone = document.getElementById('resume-dropzone');
+const fileInput = document.getElementById('input-resume');
+const filenameDisplay = document.getElementById('resume-filename');
+let selectedFile = null;
+
+dropzone.addEventListener('click', () => fileInput.click());
+dropzone.addEventListener('dragover', e => {
+    e.preventDefault();
+    dropzone.style.borderColor = 'var(--accent-blue)';
+    dropzone.style.backgroundColor = 'rgba(10, 102, 194, 0.05)';
+});
+dropzone.addEventListener('dragleave', () => {
+    dropzone.style.borderColor = 'var(--glass-border)';
+    dropzone.style.backgroundColor = 'transparent';
+});
+dropzone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropzone.style.borderColor = 'var(--glass-border)';
+    dropzone.style.backgroundColor = 'transparent';
+    if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', e => {
+    if (e.target.files.length) handleFile(e.target.files[0]);
+});
+
+function handleFile(file) {
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
+        toast('Please select a PDF file', 'error');
+        return;
+    }
+    selectedFile = file;
+    filenameDisplay.textContent = `Selected: ${file.name}`;
+    filenameDisplay.style.display = 'block';
+    dropzone.style.borderColor = 'var(--accent-green)';
+}
+
 // ── Registration ────────────────────────────────────────────
 
 document.getElementById('form-setup').addEventListener('submit', async e => {
     e.preventDefault();
+    if (!selectedFile) {
+        toast('Please upload your resume PDF first', 'error');
+        return;
+    }
+
     const btn = document.getElementById('btn-register');
     btn.disabled = true;
-    btn.querySelector('span').textContent = 'Creating...';
+    btn.querySelector('span').textContent = 'Parsing Resume & Creating...';
 
     try {
-        // Seed jobs first
-        try { await api('/api/jobs/seed', { method: 'POST' }); } catch {}
+        const formData = new FormData();
+        formData.append('name', document.getElementById('input-name').value.trim());
+        formData.append('email', document.getElementById('input-email').value.trim());
+        formData.append('file', selectedFile);
 
-        const userData = {
-            name: document.getElementById('input-name').value.trim(),
-            email: document.getElementById('input-email').value.trim(),
-            skills: document.getElementById('input-skills').value.split(',').map(s => s.trim()).filter(Boolean),
-            experience_years: parseInt(document.getElementById('input-experience').value) || 0,
-            preferred_roles: document.getElementById('input-roles').value.split(',').map(s => s.trim()).filter(Boolean),
-            location: document.getElementById('input-location').value.trim(),
-        };
+        // Note: Using standard fetch here to pass FormData natively instead of the api() helper
+        const url = `${API}/api/users/register/resume`;
+        const res = await fetch(url, {
+            method: 'POST',
+            body: formData
+            // Don't set Content-Type header manually for FormData
+        });
 
-        const user = await api('/api/users/register', { method: 'POST', body: userData });
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || `HTTP ${res.status}`);
+        }
+
+        const user = await res.json();
         currentUser = user;
         localStorage.setItem('jrs_user', JSON.stringify(user));
-        toast('Profile created! Loading recommendations...', 'success');
+        toast('Profile created successfully using Resume!', 'success');
         updateUserUI();
         showSection('dashboard');
         loadDashboard();
@@ -148,6 +196,16 @@ function updateUserUI() {
     const initials = currentUser.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
     document.getElementById('user-initials').textContent = initials;
     document.getElementById('profile-initials').textContent = initials;
+    document.getElementById('btn-logout').style.display = 'inline-flex';
+}
+
+document.getElementById('btn-logout').addEventListener('click', () => {
+    currentUser = null;
+    localStorage.removeItem('jrs_user');
+    document.getElementById('btn-logout').style.display = 'none';
+    document.getElementById('user-initials').textContent = '?';
+    showSection('hero');
+});
     document.getElementById('profile-name').textContent = currentUser.name;
     document.getElementById('profile-email').textContent = currentUser.email;
     document.getElementById('profile-experience').textContent = currentUser.experience_years;
@@ -239,11 +297,18 @@ async function loadJobs(filters = {}) {
 
 document.getElementById('btn-seed-jobs').addEventListener('click', async () => {
     try {
-        await api('/api/jobs/seed', { method: 'POST' });
-        toast('50 jobs seeded!', 'success');
+        document.getElementById('btn-seed-jobs').textContent = '⏳ Fetching...';
+        document.getElementById('btn-seed-jobs').disabled = true;
+        const res = await api('/api/jobs/fetch-live', { method: 'POST' });
+        toast(res.message, 'success');
         loadJobs();
         loadStats();
-    } catch (e) { toast(e.message, 'error'); }
+    } catch (e) {
+        toast('Failed to fetch live jobs', 'error');
+    } finally {
+        document.getElementById('btn-seed-jobs').textContent = '🔄 Fetch Live Jobs';
+        document.getElementById('btn-seed-jobs').disabled = false;
+    }
 });
 
 document.getElementById('filter-experience').addEventListener('change', () => applyFilters());

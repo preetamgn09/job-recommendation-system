@@ -2,9 +2,10 @@
 User Service — API routes.
 """
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, UploadFile, File, Form
 from app.schemas import UserCreate, UserUpdate, UserResponse, UserListResponse, ActivityLog
 from app import service
+from app.resume_parser import extract_text_from_pdf, extract_skills_from_text
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -19,6 +20,49 @@ async def register_user(data: UserCreate):
         if "duplicate" in str(e).lower():
             raise HTTPException(status_code=409, detail="Email already registered")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/register/resume", response_model=UserResponse, status_code=201)
+async def register_user_with_resume(
+    name: str = Form(...),
+    email: str = Form(...),
+    file: UploadFile = File(...)
+):
+    """Register a new user by parsing their resume PDF."""
+    if not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files are supported")
+        
+    try:
+        contents = await file.read()
+        text = extract_text_from_pdf(contents)
+        skills = extract_skills_from_text(text)
+        
+        # Simple rudimentary experience extraction
+        experience = 0
+        text_lower = text.lower()
+        if "lead" in text_lower or "manager" in text_lower:
+            experience = 8
+        elif "senior" in text_lower or "architect" in text_lower:
+            experience = 5
+        elif "mid" in text_lower:
+            experience = 3
+        else:
+            experience = 1
+            
+        data = UserCreate(
+            name=name,
+            email=email,
+            skills=skills,
+            experience_years=experience,
+            preferred_roles=["Software Engineer", "Developer"] # Default generic roles
+        )
+        
+        user = await service.create_user(data)
+        return user
+    except Exception as e:
+        if "duplicate" in str(e).lower():
+            raise HTTPException(status_code=409, detail="Email already registered")
+        raise HTTPException(status_code=500, detail=f"Failed to process resume: {str(e)}")
 
 
 @router.get("/", response_model=UserListResponse)
