@@ -12,6 +12,8 @@
     <img src="https://img.shields.io/badge/RabbitMQ-3.13-FF6600?logo=rabbitmq&logoColor=white" />
     <img src="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white" />
     <img src="https://img.shields.io/badge/scikit--learn-1.5-F7931E?logo=scikitlearn&logoColor=white" />
+    <br /><br />
+    <a href="https://render.com/deploy?repo=https://github.com/preetamgn09/job-recommendation-system"><img src="https://render.com/images/deploy-to-render-button.svg" alt="Deploy to Render" /></a>
   </p>
 </p>
 
@@ -23,7 +25,8 @@
 - [Architecture](#-architecture)
 - [Tech Stack](#-tech-stack)
 - [Project Structure](#-project-structure)
-- [Getting Started](#-getting-started)
+- [Getting Started (Local)](#-getting-started-local)
+- [Cloud Deployment (Render)](#-cloud-deployment-render)
 - [API Reference](#-api-reference)
 - [How It Works](#-how-it-works)
 - [Screenshots](#-screenshots)
@@ -117,6 +120,7 @@
 job-recommendation-system/
 │
 ├── docker-compose.yml          # 8 containers orchestration
+├── render.yaml                 # Render.com deployment blueprint
 ├── .env                        # Environment configuration
 ├── .gitignore                  # Git ignore rules
 ├── README.md                   # This file
@@ -192,7 +196,7 @@ job-recommendation-system/
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Getting Started (Local)
 
 ### Prerequisites
 
@@ -202,7 +206,7 @@ job-recommendation-system/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/<your-username>/job-recommendation-system.git
+git clone https://github.com/preetamgn09/job-recommendation-system.git
 cd job-recommendation-system
 ```
 
@@ -238,6 +242,79 @@ docker-compose up --build
 docker-compose down          # Stop containers
 docker-compose down -v       # Stop + delete data volumes
 ```
+
+---
+
+## ☁️ Cloud Deployment (Render)
+
+Deploy the entire system to the cloud for a **real public URL** — 100% free!
+
+### One-Click Deploy
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/preetamgn09/job-recommendation-system)
+
+### Manual Deployment
+
+#### Step 1: Set Up Free Managed Services
+
+| Service | Provider | Free Tier | Sign Up |
+|---------|----------|-----------|--------|
+| 🗄️ MongoDB | MongoDB Atlas | 512 MB | [mongodb.com/atlas](https://www.mongodb.com/atlas) |
+| ⚡ Redis | Redis Cloud | 30 MB | [redis.io/cloud](https://redis.io/cloud/) |
+| 🐰 RabbitMQ | CloudAMQP | 1M msgs/mo | [cloudamqp.com](https://www.cloudamqp.com/) |
+
+#### Step 2: Deploy on Render.com
+
+1. Sign up at [render.com](https://render.com) with your GitHub account
+2. For each service, click **"New" → "Web Service"** → Connect `preetamgn09/job-recommendation-system`
+3. Configure:
+
+| Render Service | Dockerfile Path | Type |
+|---------------|----------------|------|
+| `jobflow-user-service` | `user-service/Dockerfile` | Web Service |
+| `jobflow-job-service` | `job-service/Dockerfile` | Web Service |
+| `jobflow-recommendation-service` | `recommendation-service/Dockerfile` | Web Service |
+| `jobflow-api-gateway` | `api-gateway/Dockerfile` | Web Service |
+| `jobflow-event-service` | `event-service/Dockerfile` | Background Worker |
+
+> **Important**: Set the **Root Directory** to `.` (repo root) for all services.
+
+#### Step 3: Add Environment Variables
+
+For **all services**, add:
+```
+MONGO_URL=mongodb+srv://user:pass@cluster.mongodb.net/job_recommendation
+MONGO_DB=job_recommendation
+REDIS_URL=redis://default:pass@host:port
+RABBITMQ_URL=amqps://user:pass@host/vhost
+```
+
+For **API Gateway**, also add:
+```
+USER_SERVICE_URL=https://jobflow-user-service.onrender.com
+JOB_SERVICE_URL=https://jobflow-job-service.onrender.com
+RECOMMENDATION_SERVICE_URL=https://jobflow-recommendation-service.onrender.com
+```
+
+For **Recommendation Service**, also add:
+```
+USER_SERVICE_URL=https://jobflow-user-service.onrender.com
+JOB_SERVICE_URL=https://jobflow-job-service.onrender.com
+```
+
+For **Event Service**, also add:
+```
+RECOMMENDATION_SERVICE_URL=https://jobflow-recommendation-service.onrender.com
+```
+
+#### Step 4: Access Your Live App
+
+Your app will be live at:
+```
+https://jobflow-api-gateway.onrender.com
+```
+
+> ⚠️ **Note**: Render's free tier sleeps after 15 min of inactivity. First request after idle takes ~30s.
 
 ---
 

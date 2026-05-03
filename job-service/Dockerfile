@@ -10,4 +10,5 @@ COPY job-service/app/ ./app/
 
 EXPOSE 8002
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8002"]
+# Use PORT env var (Render sets this), fallback to 8002 for local Docker
+CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8002}

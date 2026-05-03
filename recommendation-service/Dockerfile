@@ -10,4 +10,5 @@ COPY recommendation-service/app/ ./app/
 
 EXPOSE 8003
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8003"]
+# Use PORT env var (Render sets this), fallback to 8003 for local Docker
+CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8003}
