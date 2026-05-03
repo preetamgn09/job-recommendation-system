@@ -164,6 +164,32 @@
                                 </svg>
                             </button>
                         </div>
+                        <p style="text-align: center; margin-top: 24px; font-size: 0.95rem;">Already have an account? <a href="#" id="link-show-login" style="color: var(--accent-blue); font-weight: 500;">Log In here</a></p>
+                    </form>
+                </div>
+
+                <!-- Login Form (Hidden by default) -->
+                <div class="setup-card glass-card" id="card-login" style="display: none;">
+                    <div class="setup-header">
+                        <h2>Welcome Back!</h2>
+                        <p>Enter your email to access your profile and recommendations.</p>
+                    </div>
+                    <form id="form-login" class="setup-form">
+                        <div class="form-row" style="grid-template-columns: 1fr;">
+                            <div class="form-group">
+                                <label for="input-login-email">Email Address</label>
+                                <input type="email" id="input-login-email" placeholder="rahul@example.com" required>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-lg" id="btn-login-submit">
+                                <span>Log In to Dashboard</span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <p style="text-align: center; margin-top: 24px; font-size: 0.95rem;">Don't have an account? <a href="#" id="link-show-register" style="color: var(--accent-blue); font-weight: 500;">Create one</a></p>
                     </form>
                 </div>
             </div>
@@ -413,6 +439,6 @@
     <!-- ═══════════ TOAST NOTIFICATION ═══════════ -->
     <div id="toast-container" class="toast-container"></div>
 
-    <script src="/static/app.js?v=5"></script>
+    <script src="/static/app.js?v=6"></script>
 </body>
 </html>

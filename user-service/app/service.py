@@ -48,6 +48,15 @@ async def get_user(user_id: str) -> dict:
         return None
     return _serialize_user(user)
 
+async def get_user_by_email(email: str) -> dict:
+    """Get a user by email."""
+    db = get_db()
+    try:
+        user = await db.users.find_one({"email": email})
+    except Exception:
+        return None
+    return _serialize_user(user)
+
 
 async def update_user(user_id: str, data: UserUpdate) -> dict:
     """Update user profile."""

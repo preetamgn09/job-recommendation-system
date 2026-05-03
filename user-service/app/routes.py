@@ -3,6 +3,7 @@ User Service — API routes.
 """
 
 from fastapi import APIRouter, HTTPException, Query, UploadFile, File, Form
+from pydantic import BaseModel
 from app.schemas import UserCreate, UserUpdate, UserResponse, UserListResponse, ActivityLog
 from app import service
 from app.resume_parser import extract_text_from_pdf, extract_skills_from_text
@@ -78,6 +79,17 @@ async def list_users(skip: int = Query(0, ge=0), limit: int = Query(50, ge=1, le
 async def get_user(user_id: str):
     """Get user profile by ID."""
     user = await service.get_user(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+class LoginRequest(BaseModel):
+    email: str
+
+@router.post("/login", response_model=UserResponse)
+async def login_user(data: LoginRequest):
+    """Login a user by email."""
+    user = await service.get_user_by_email(data.email)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user

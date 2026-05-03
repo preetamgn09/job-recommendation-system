@@ -183,6 +183,65 @@ document.getElementById('form-setup').addEventListener('submit', async e => {
     }
 });
 
+// ── Login Flow ──────────────────────────────────────────────
+
+const linkShowLogin = document.getElementById('link-show-login');
+const linkShowRegister = document.getElementById('link-show-register');
+const formSetup = document.getElementById('form-setup');
+const formLogin = document.getElementById('form-login');
+const cardRegister = formSetup.parentElement;
+const cardLogin = formLogin.parentElement;
+
+if (linkShowLogin && linkShowRegister) {
+    linkShowLogin.addEventListener('click', (e) => {
+        e.preventDefault();
+        cardRegister.style.display = 'none';
+        cardLogin.style.display = 'block';
+    });
+
+    linkShowRegister.addEventListener('click', (e) => {
+        e.preventDefault();
+        cardLogin.style.display = 'none';
+        cardRegister.style.display = 'block';
+    });
+}
+
+formLogin.addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = document.getElementById('btn-login-submit');
+    const email = document.getElementById('input-login-email').value.trim();
+    
+    btn.disabled = true;
+    btn.querySelector('span').textContent = 'Logging In...';
+
+    try {
+        const res = await fetch(`${API}/api/users/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || 'Invalid email or user not found');
+        }
+
+        const user = await res.json();
+        currentUser = user;
+        localStorage.setItem('jrs_user', JSON.stringify(user));
+        toast('Logged in successfully!', 'success');
+        updateUserUI();
+        showSection('dashboard');
+        loadDashboard();
+        loadStats();
+    } catch (err) {
+        toast(err.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.querySelector('span').textContent = 'Log In to Dashboard';
+    }
+});
+
 // ── Restore Session ─────────────────────────────────────────
 
 (function restoreSession() {
