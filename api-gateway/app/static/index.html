@@ -88,27 +88,26 @@
                     <span>View Architecture</span>
                 </button>
             </div>
-            <div class="hero-stats">
+            <div class="hero-stats" style="flex-wrap: wrap; max-width: 800px; justify-content: center; gap: 16px;">
                 <div class="stat-item">
-                    <span class="stat-number" id="stat-jobs">0</span>
-                    <span class="stat-label">Job Listings</span>
+                    <span class="stat-number" id="stat-jobs">50+</span>
+                    <span class="stat-label">Live API Jobs</span>
                 </div>
                 <div class="stat-divider"></div>
                 <div class="stat-item">
-                    <span class="stat-number" id="stat-users">0</span>
-                    <span class="stat-label">Active Users</span>
+                    <span class="stat-number">Real-Time</span>
+                    <span class="stat-label">AI Matchmaking</span>
                 </div>
                 <div class="stat-divider"></div>
                 <div class="stat-item">
-                    <span class="stat-number">5</span>
-                    <span class="stat-label">Microservices</span>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-item">
-                    <span class="stat-number">&lt;50ms</span>
-                    <span class="stat-label">Response Time</span>
+                    <span class="stat-number">Event-Driven</span>
+                    <span class="stat-label">Async Architecture</span>
                 </div>
             </div>
+            <p style="margin-top: 24px; font-size: 0.95rem; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <span style="color: var(--accent-blue);">👉</span> 
+                Handles asynchronous user events via RabbitMQ without blocking API requests.
+            </p>
         </div>
     </section>
 
@@ -439,6 +438,6 @@
     <!-- ═══════════ TOAST NOTIFICATION ═══════════ -->
     <div id="toast-container" class="toast-container"></div>
 
-    <script src="/static/app.js?v=6"></script>
+    <script src="/static/app.js?v=7"></script>
 </body>
 </html>

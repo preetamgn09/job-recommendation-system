@@ -78,12 +78,10 @@ function createParticles() {
 async function loadStats() {
     try {
         const jobs = await api('/api/jobs?limit=1');
-        document.getElementById('stat-jobs').textContent = jobs.total || 0;
-    } catch { document.getElementById('stat-jobs').textContent = '0'; }
-    try {
-        const users = await api('/api/users/?limit=1');
-        document.getElementById('stat-users').textContent = users.total || 0;
-    } catch { document.getElementById('stat-users').textContent = '0'; }
+        if (jobs.total) {
+            document.getElementById('stat-jobs').textContent = jobs.total + '+';
+        }
+    } catch {}
 }
 
 // ── Hero Buttons ────────────────────────────────────────────
