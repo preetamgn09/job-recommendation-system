@@ -52,14 +52,12 @@ document.querySelectorAll('.nav-link').forEach(link => {
 
 // ── Loading Screen ──────────────────────────────────────────
 
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        const loader = document.getElementById('loading-screen');
-        if (loader) loader.classList.add('hide');
-        createParticles();
-        loadStats();
-    }, 1200);
-});
+setTimeout(() => {
+    const loader = document.getElementById('loading-screen');
+    if (loader) loader.classList.add('hide');
+    createParticles();
+    loadStats();
+}, 500);
 
 function createParticles() {
     const container = document.getElementById('particles');
