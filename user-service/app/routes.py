@@ -26,6 +26,7 @@ async def register_user(data: UserCreate):
 async def register_user_with_resume(
     name: str = Form(...),
     email: str = Form(...),
+    location: str = Form(None),
     file: UploadFile = File(...)
 ):
     """Register a new user by parsing their resume PDF."""
@@ -52,6 +53,7 @@ async def register_user_with_resume(
         data = UserCreate(
             name=name,
             email=email,
+            location=location,
             skills=skills,
             experience_years=experience,
             preferred_roles=["Software Engineer", "Developer"] # Default generic roles

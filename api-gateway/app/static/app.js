@@ -151,6 +151,7 @@ document.getElementById('form-setup').addEventListener('submit', async e => {
         const formData = new FormData();
         formData.append('name', document.getElementById('input-name').value.trim());
         formData.append('email', document.getElementById('input-email').value.trim());
+        formData.append('location', document.getElementById('input-location').value.trim() || 'Remote');
         formData.append('file', selectedFile);
 
         // Note: Using standard fetch here to pass FormData natively instead of the api() helper
@@ -205,6 +206,17 @@ function updateUserUI() {
 
     const skillsEl = document.getElementById('profile-skills');
     skillsEl.innerHTML = (currentUser.skills || []).map(s => `<span class="skill-tag">${s}</span>`).join('');
+    
+    // Update Full Profile Section
+    const fullInitials = document.getElementById('full-profile-initials');
+    if (fullInitials) {
+        fullInitials.textContent = initials;
+        document.getElementById('full-profile-name').textContent = currentUser.name;
+        document.getElementById('full-profile-email').textContent = currentUser.email;
+        document.getElementById('full-profile-experience').textContent = currentUser.experience_years + ' years';
+        document.getElementById('full-profile-location').textContent = currentUser.location || 'Remote';
+        document.getElementById('full-profile-skills').innerHTML = (currentUser.skills || []).map(s => `<span class="skill-tag">${s}</span>`).join('');
+    }
 }
 
 const btnLogout = document.getElementById('btn-logout');

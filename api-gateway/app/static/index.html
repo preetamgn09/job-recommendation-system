@@ -39,6 +39,7 @@
             </div>
             <div class="nav-links">
                 <a href="#" class="nav-link active" data-section="dashboard" id="nav-dashboard">Dashboard</a>
+                <a href="#" class="nav-link" data-section="profile" id="nav-profile">My Profile</a>
                 <a href="#" class="nav-link" data-section="jobs" id="nav-jobs">Browse Jobs</a>
                 <a href="#" class="nav-link" data-section="recommendations" id="nav-recommendations">For You</a>
                 <a href="#" class="nav-link" data-section="system" id="nav-system">System</a>
@@ -135,6 +136,12 @@
                         </div>
                         <div class="form-row" style="grid-template-columns: 1fr;">
                             <div class="form-group">
+                                <label for="input-location">Preferred Work Location</label>
+                                <input type="text" id="input-location" placeholder="e.g. Remote, Bangalore, London" required>
+                            </div>
+                        </div>
+                        <div class="form-row" style="grid-template-columns: 1fr;">
+                            <div class="form-group">
                                 <label for="input-resume">Upload Resume (PDF)</label>
                                 <div style="border: 2px dashed var(--glass-border); border-radius: var(--radius-md); padding: 32px; text-align: center; cursor: pointer; transition: var(--transition);" id="resume-dropzone">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32" style="color: var(--accent-blue); margin-bottom: 12px;">
@@ -158,6 +165,41 @@
                             </button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── My Profile Section ── -->
+        <section id="section-profile" class="section hidden">
+            <div class="container" style="max-width: 800px; margin: 0 auto;">
+                <div class="section-header">
+                    <h2>Your Candidate Profile</h2>
+                    <p>Details extracted automatically by NextStep's AI engine.</p>
+                </div>
+                <div class="profile-card glass-card" style="padding: 40px;">
+                    <div class="profile-header" style="margin-bottom: 30px;">
+                        <div class="profile-avatar" style="width: 80px; height: 80px; font-size: 2rem;">
+                            <span id="full-profile-initials">?</span>
+                        </div>
+                        <div class="profile-info">
+                            <h3 id="full-profile-name" style="font-size: 1.8rem; margin-bottom: 4px;">User</h3>
+                            <p id="full-profile-email" style="color: var(--text-muted);">user@email.com</p>
+                        </div>
+                    </div>
+                    
+                    <h4 style="margin-bottom: 12px; color: var(--text-primary);">Extracted Skills</h4>
+                    <div class="profile-skills" id="full-profile-skills" style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--glass-border);"></div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <h4 style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 4px;">Calculated Experience</h4>
+                            <p id="full-profile-experience" style="font-size: 1.2rem; font-weight: 600;">0 years</p>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 4px;">Preferred Location</h4>
+                            <p id="full-profile-location" style="font-size: 1.2rem; font-weight: 600;">Remote</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -371,6 +413,6 @@
     <!-- ═══════════ TOAST NOTIFICATION ═══════════ -->
     <div id="toast-container" class="toast-container"></div>
 
-    <script src="/static/app.js?v=4"></script>
+    <script src="/static/app.js?v=5"></script>
 </body>
 </html>
