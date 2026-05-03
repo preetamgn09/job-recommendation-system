@@ -1,0 +1,147 @@
+version: '3.8'
+
+services:
+  # ── Infrastructure ──
+  mongodb:
+    image: mongo:7
+    container_name: jrs-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - jrs-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: jrs-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - jrs-network
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: jrs-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - jrs-network
+
+  # ── Microservices (all use project root as context) ──
+  user-service:
+    build:
+      context: .
+      dockerfile: user-service/Dockerfile
+    container_name: jrs-user-service
+    ports:
+      - "8001:8001"
+    env_file: .env
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jrs-network
+    restart: on-failure
+
+  job-service:
+    build:
+      context: .
+      dockerfile: job-service/Dockerfile
+    container_name: jrs-job-service
+    ports:
+      - "8002:8002"
+    env_file: .env
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jrs-network
+    restart: on-failure
+
+  recommendation-service:
+    build:
+      context: .
+      dockerfile: recommendation-service/Dockerfile
+    container_name: jrs-recommendation-service
+    ports:
+      - "8003:8003"
+    env_file: .env
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jrs-network
+    restart: on-failure
+
+  event-service:
+    build:
+      context: .
+      dockerfile: event-service/Dockerfile
+    container_name: jrs-event-service
+    env_file: .env
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - jrs-network
+    restart: on-failure
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    container_name: jrs-api-gateway
+    ports:
+      - "8000:8000"
+    env_file: .env
+    depends_on:
+      - user-service
+      - job-service
+      - recommendation-service
+      - rabbitmq
+    networks:
+      - jrs-network
+    restart: on-failure
+
+volumes:
+  mongo-data:
+  redis-data:
+  rabbitmq-data:
+
+networks:
+  jrs-network:
+    driver: bridge

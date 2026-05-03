@@ -1,0 +1,162 @@
+[
+  {
+    "name": "Arjun Mehta",
+    "email": "arjun.mehta@example.com",
+    "skills": ["python", "machine learning", "tensorflow", "sql", "data analysis"],
+    "experience_years": 4,
+    "location": "Bangalore",
+    "preferred_roles": ["Data Scientist", "ML Engineer"]
+  },
+  {
+    "name": "Priya Sharma",
+    "email": "priya.sharma@example.com",
+    "skills": ["javascript", "react", "node.js", "typescript", "css"],
+    "experience_years": 3,
+    "location": "Mumbai",
+    "preferred_roles": ["Frontend Developer", "Full Stack Developer"]
+  },
+  {
+    "name": "Rahul Verma",
+    "email": "rahul.verma@example.com",
+    "skills": ["java", "spring boot", "microservices", "kafka", "docker"],
+    "experience_years": 6,
+    "location": "Hyderabad",
+    "preferred_roles": ["Backend Engineer", "Software Architect"]
+  },
+  {
+    "name": "Sneha Patel",
+    "email": "sneha.patel@example.com",
+    "skills": ["python", "django", "postgresql", "redis", "aws"],
+    "experience_years": 5,
+    "location": "Pune",
+    "preferred_roles": ["Backend Developer", "DevOps Engineer"]
+  },
+  {
+    "name": "Aditya Kumar",
+    "email": "aditya.kumar@example.com",
+    "skills": ["kubernetes", "terraform", "aws", "ci/cd", "docker", "linux"],
+    "experience_years": 7,
+    "location": "Delhi",
+    "preferred_roles": ["DevOps Engineer", "Cloud Architect"]
+  },
+  {
+    "name": "Kavya Nair",
+    "email": "kavya.nair@example.com",
+    "skills": ["flutter", "dart", "kotlin", "swift", "firebase"],
+    "experience_years": 3,
+    "location": "Chennai",
+    "preferred_roles": ["Mobile Developer", "Flutter Developer"]
+  },
+  {
+    "name": "Vikram Singh",
+    "email": "vikram.singh@example.com",
+    "skills": ["python", "nlp", "pytorch", "deep learning", "transformers"],
+    "experience_years": 5,
+    "location": "Bangalore",
+    "preferred_roles": ["NLP Engineer", "AI Researcher"]
+  },
+  {
+    "name": "Ananya Gupta",
+    "email": "ananya.gupta@example.com",
+    "skills": ["react", "next.js", "tailwindcss", "graphql", "typescript"],
+    "experience_years": 4,
+    "location": "Noida",
+    "preferred_roles": ["Frontend Developer", "UI Engineer"]
+  },
+  {
+    "name": "Rohan Desai",
+    "email": "rohan.desai@example.com",
+    "skills": ["go", "grpc", "postgresql", "redis", "microservices"],
+    "experience_years": 6,
+    "location": "Mumbai",
+    "preferred_roles": ["Backend Engineer", "Platform Engineer"]
+  },
+  {
+    "name": "Meera Reddy",
+    "email": "meera.reddy@example.com",
+    "skills": ["data engineering", "spark", "airflow", "python", "sql", "databricks"],
+    "experience_years": 5,
+    "location": "Hyderabad",
+    "preferred_roles": ["Data Engineer", "Analytics Engineer"]
+  },
+  {
+    "name": "Siddharth Joshi",
+    "email": "siddharth.joshi@example.com",
+    "skills": ["cybersecurity", "penetration testing", "python", "network security", "siem"],
+    "experience_years": 4,
+    "location": "Pune",
+    "preferred_roles": ["Security Engineer", "SOC Analyst"]
+  },
+  {
+    "name": "Ishita Banerjee",
+    "email": "ishita.banerjee@example.com",
+    "skills": ["figma", "ui/ux", "prototyping", "user research", "css", "html"],
+    "experience_years": 3,
+    "location": "Kolkata",
+    "preferred_roles": ["UI/UX Designer", "Product Designer"]
+  },
+  {
+    "name": "Akash Mishra",
+    "email": "akash.mishra@example.com",
+    "skills": ["rust", "c++", "systems programming", "linux", "embedded"],
+    "experience_years": 8,
+    "location": "Bangalore",
+    "preferred_roles": ["Systems Engineer", "Embedded Developer"]
+  },
+  {
+    "name": "Divya Krishnan",
+    "email": "divya.krishnan@example.com",
+    "skills": ["product management", "agile", "jira", "analytics", "sql"],
+    "experience_years": 6,
+    "location": "Chennai",
+    "preferred_roles": ["Product Manager", "Program Manager"]
+  },
+  {
+    "name": "Nikhil Agarwal",
+    "email": "nikhil.agarwal@example.com",
+    "skills": ["blockchain", "solidity", "ethereum", "web3.js", "smart contracts"],
+    "experience_years": 3,
+    "location": "Delhi",
+    "preferred_roles": ["Blockchain Developer", "Web3 Engineer"]
+  },
+  {
+    "name": "Riya Chopra",
+    "email": "riya.chopra@example.com",
+    "skills": ["qa automation", "selenium", "cypress", "python", "api testing"],
+    "experience_years": 4,
+    "location": "Gurgaon",
+    "preferred_roles": ["QA Engineer", "SDET"]
+  },
+  {
+    "name": "Karan Thakur",
+    "email": "karan.thakur@example.com",
+    "skills": ["angular", "rxjs", "typescript", "ngrx", "sass"],
+    "experience_years": 5,
+    "location": "Pune",
+    "preferred_roles": ["Angular Developer", "Frontend Lead"]
+  },
+  {
+    "name": "Tanvi Shah",
+    "email": "tanvi.shah@example.com",
+    "skills": ["computer vision", "opencv", "python", "pytorch", "image processing"],
+    "experience_years": 4,
+    "location": "Bangalore",
+    "preferred_roles": ["Computer Vision Engineer", "ML Engineer"]
+  },
+  {
+    "name": "Harsh Pandey",
+    "email": "harsh.pandey@example.com",
+    "skills": ["aws", "azure", "gcp", "serverless", "lambda", "cloud formation"],
+    "experience_years": 7,
+    "location": "Hyderabad",
+    "preferred_roles": ["Cloud Architect", "Solutions Architect"]
+  },
+  {
+    "name": "Neha Saxena",
+    "email": "neha.saxena@example.com",
+    "skills": ["tableau", "power bi", "sql", "python", "statistics", "excel"],
+    "experience_years": 3,
+    "location": "Mumbai",
+    "preferred_roles": ["Business Analyst", "Data Analyst"]
+  }
+]

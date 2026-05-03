@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobFlow AI — Intelligent Job Recommendations</title>
+    <meta name="description" content="Distributed Job Recommendation System powered by TF-IDF, cosine similarity, and real-time event processing.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- ═══════════ LOADING SCREEN ═══════════ -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loader-content">
+            <div class="loader-rings">
+                <div class="ring"></div>
+                <div class="ring"></div>
+                <div class="ring"></div>
+            </div>
+            <h2 class="loader-text">JobFlow AI</h2>
+            <p class="loader-sub">Initializing recommendation engine...</p>
+        </div>
+    </div>
+
+    <!-- ═══════════ NAVIGATION ═══════════ -->
+    <nav id="main-nav" class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                        <path d="M2 17l10 5 10-5"/>
+                        <path d="M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <span class="brand-name">JobFlow <span class="brand-accent">AI</span></span>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link active" data-section="dashboard" id="nav-dashboard">Dashboard</a>
+                <a href="#" class="nav-link" data-section="jobs" id="nav-jobs">Browse Jobs</a>
+                <a href="#" class="nav-link" data-section="recommendations" id="nav-recommendations">For You</a>
+                <a href="#" class="nav-link" data-section="system" id="nav-system">System</a>
+            </div>
+            <div class="nav-actions">
+                <div class="user-avatar" id="user-avatar-nav">
+                    <span id="user-initials">?</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══════════ HERO SECTION ═══════════ -->
+    <section id="section-hero" class="hero">
+        <div class="hero-bg">
+            <div class="hero-gradient"></div>
+            <div class="hero-grid"></div>
+            <div class="hero-particles" id="particles"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                Powered by TF-IDF + Cosine Similarity
+            </div>
+            <h1 class="hero-title">
+                Find Your <span class="gradient-text">Dream Job</span>
+                <br>With AI Precision
+            </h1>
+            <p class="hero-subtitle">
+                Our distributed recommendation engine analyzes your skills, tracks your behavior,
+                and delivers personalized job matches in real-time.
+            </p>
+            <div class="hero-actions">
+                <button class="btn btn-primary btn-lg" id="btn-get-started">
+                    <span>Get Started</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+                <button class="btn btn-ghost btn-lg" id="btn-view-architecture">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <rect x="2" y="3" width="20" height="14" rx="2"/>
+                        <path d="M8 21h8M12 17v4"/>
+                    </svg>
+                    <span>View Architecture</span>
+                </button>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="stat-jobs">0</span>
+                    <span class="stat-label">Job Listings</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number" id="stat-users">0</span>
+                    <span class="stat-label">Active Users</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number">5</span>
+                    <span class="stat-label">Microservices</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number">&lt;50ms</span>
+                    <span class="stat-label">Response Time</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ MAIN CONTENT ═══════════ -->
+    <main class="main-content">
+
+        <!-- ── Setup Panel (shown first time) ── -->
+        <section id="section-setup" class="section hidden">
+            <div class="container">
+                <div class="setup-card glass-card">
+                    <div class="setup-header">
+                        <h2>👋 Welcome! Let's set up your profile</h2>
+                        <p>Tell us about your skills and preferences to get personalized recommendations.</p>
+                    </div>
+                    <form id="form-setup" class="setup-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="input-name">Full Name</label>
+                                <input type="text" id="input-name" placeholder="Rahul Sharma" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="input-email">Email</label>
+                                <input type="email" id="input-email" placeholder="rahul@example.com" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="input-skills">Skills (comma separated)</label>
+                                <input type="text" id="input-skills" placeholder="python, machine learning, sql, docker" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="input-experience">Experience (years)</label>
+                                <input type="number" id="input-experience" min="0" max="30" value="2" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="input-roles">Preferred Roles (comma separated)</label>
+                                <input type="text" id="input-roles" placeholder="Data Scientist, ML Engineer, Backend Developer">
+                            </div>
+                            <div class="form-group">
+                                <label for="input-location">Location</label>
+                                <input type="text" id="input-location" placeholder="Bangalore, India">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-lg" id="btn-register">
+                                <span>Create Profile & Get Recommendations</span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Dashboard Section ── -->
+        <section id="section-dashboard" class="section hidden">
+            <div class="container">
+                <!-- User Profile Card -->
+                <div class="dashboard-grid">
+                    <div class="profile-card glass-card" id="profile-card">
+                        <div class="profile-header">
+                            <div class="profile-avatar">
+                                <span id="profile-initials">RS</span>
+                            </div>
+                            <div class="profile-info">
+                                <h3 id="profile-name">User</h3>
+                                <p id="profile-email">user@email.com</p>
+                            </div>
+                        </div>
+                        <div class="profile-skills" id="profile-skills"></div>
+                        <div class="profile-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span id="profile-experience">0</span> yrs experience
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">📍</span>
+                                <span id="profile-location">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Recommendations -->
+                    <div class="reco-preview glass-card">
+                        <div class="section-header">
+                            <h3>🎯 Top Recommendations</h3>
+                            <a href="#" class="link-more" id="link-view-all-reco">View All →</a>
+                        </div>
+                        <div id="reco-preview-list" class="reco-list">
+                            <div class="skeleton-card"></div>
+                            <div class="skeleton-card"></div>
+                            <div class="skeleton-card"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Timeline -->
+                <div class="activity-section glass-card">
+                    <div class="section-header">
+                        <h3>📊 Recent Activity</h3>
+                        <span class="activity-count" id="activity-count">0 events</span>
+                    </div>
+                    <div id="activity-timeline" class="timeline">
+                        <p class="empty-state">No activity yet. Browse jobs to start building your profile!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Jobs Section ── -->
+        <section id="section-jobs" class="section hidden">
+            <div class="container">
+                <div class="section-header-lg">
+                    <h2>💼 Browse Jobs</h2>
+                    <div class="search-bar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                            <circle cx="11" cy="11" r="8"/>
+                            <path d="M21 21l-4.35-4.35"/>
+                        </svg>
+                        <input type="text" id="input-search-jobs" placeholder="Search by title, skills, or company...">
+                    </div>
+                </div>
+                <div class="filter-bar">
+                    <select id="filter-experience" class="filter-select">
+                        <option value="">All Levels</option>
+                        <option value="junior">Junior</option>
+                        <option value="mid">Mid-Level</option>
+                        <option value="senior">Senior</option>
+                    </select>
+                    <select id="filter-type" class="filter-select">
+                        <option value="">All Types</option>
+                        <option value="full-time">Full Time</option>
+                        <option value="part-time">Part Time</option>
+                        <option value="contract">Contract</option>
+                    </select>
+                    <button class="btn btn-outline btn-sm" id="btn-seed-jobs">🌱 Seed Jobs</button>
+                </div>
+                <div id="jobs-grid" class="jobs-grid">
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Recommendations Section ── -->
+        <section id="section-recommendations" class="section hidden">
+            <div class="container">
+                <div class="section-header-lg">
+                    <h2>🧠 Personalized For You</h2>
+                    <button class="btn btn-outline btn-sm" id="btn-recalculate">
+                        🔄 Recalculate
+                    </button>
+                </div>
+                <div id="reco-full-list" class="reco-full-grid">
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── System Section ── -->
+        <section id="section-system" class="section hidden">
+            <div class="container">
+                <div class="section-header-lg">
+                    <h2>⚙️ System Architecture</h2>
+                </div>
+                <div class="system-grid">
+                    <div class="system-card glass-card">
+                        <div class="system-icon" style="--accent: #3b82f6">🚪</div>
+                        <h4>API Gateway</h4>
+                        <p>Routes requests, publishes events</p>
+                        <span class="system-port">:8000</span>
+                        <span class="system-status" id="status-gateway">checking...</span>
+                    </div>
+                    <div class="system-card glass-card">
+                        <div class="system-icon" style="--accent: #8b5cf6">👤</div>
+                        <h4>User Service</h4>
+                        <p>Profiles, skills, activity tracking</p>
+                        <span class="system-port">:8001</span>
+                        <span class="system-status" id="status-user">checking...</span>
+                    </div>
+                    <div class="system-card glass-card">
+                        <div class="system-icon" style="--accent: #10b981">💼</div>
+                        <h4>Job Service</h4>
+                        <p>Job listings, search, filtering</p>
+                        <span class="system-port">:8002</span>
+                        <span class="system-status" id="status-job">checking...</span>
+                    </div>
+                    <div class="system-card glass-card">
+                        <div class="system-icon" style="--accent: #f59e0b">🧠</div>
+                        <h4>Recommendation Engine</h4>
+                        <p>TF-IDF + Cosine Similarity</p>
+                        <span class="system-port">:8003</span>
+                        <span class="system-status" id="status-reco">checking...</span>
+                    </div>
+                    <div class="system-card glass-card">
+                        <div class="system-icon" style="--accent: #ef4444">📡</div>
+                        <h4>Event Service</h4>
+                        <p>RabbitMQ consumer, cache invalidation</p>
+                        <span class="system-port">consumer</span>
+                        <span class="system-status" id="status-event">running</span>
+                    </div>
+                    <div class="system-card glass-card">
+                        <div class="system-icon" style="--accent: #06b6d4">🐰</div>
+                        <h4>RabbitMQ</h4>
+                        <p>Event queue, async messaging</p>
+                        <span class="system-port">:5672</span>
+                        <a href="http://localhost:15672" target="_blank" class="system-link">Management UI →</a>
+                    </div>
+                    <div class="system-card glass-card">
+                        <div class="system-icon" style="--accent: #dc2626">⚡</div>
+                        <h4>Redis</h4>
+                        <p>Recommendation cache, fast access</p>
+                        <span class="system-port">:6379</span>
+                        <span class="system-status status-healthy">connected</span>
+                    </div>
+                    <div class="system-card glass-card">
+                        <div class="system-icon" style="--accent: #16a34a">🍃</div>
+                        <h4>MongoDB</h4>
+                        <p>Primary data store</p>
+                        <span class="system-port">:27017</span>
+                        <span class="system-status status-healthy">connected</span>
+                    </div>
+                </div>
+
+                <!-- Data Flow Diagram -->
+                <div class="flow-card glass-card">
+                    <h3>📦 Real-Time Data Flow</h3>
+                    <div class="flow-diagram">
+                        <div class="flow-step">
+                            <div class="flow-node flow-user">👤 User</div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-node flow-gateway">🚪 Gateway</div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-node flow-queue">🐰 RabbitMQ</div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-node flow-consumer">📡 Consumer</div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-node flow-engine">🧠 Engine</div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-node flow-cache">⚡ Redis</div>
+                        </div>
+                    </div>
+                    <p class="flow-caption">User clicks job → Event published → Consumer updates profile → Engine recalculates → Redis caches → User sees fresh recommendations</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ═══════════ JOB DETAIL MODAL ═══════════ -->
+    <div id="job-modal" class="modal hidden">
+        <div class="modal-overlay" id="modal-overlay"></div>
+        <div class="modal-content glass-card">
+            <button class="modal-close" id="modal-close">&times;</button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════ TOAST NOTIFICATION ═══════════ -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
