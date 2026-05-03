@@ -1,5 +1,5 @@
 /**
- * JobFlow AI — Frontend Application
+ * NextStep — Frontend Application
  * Handles API calls, navigation, and real-time UI updates
  */
 
@@ -52,9 +52,10 @@ document.querySelectorAll('.nav-link').forEach(link => {
 
 // ── Loading Screen ──────────────────────────────────────────
 
-window.addEventListener('load', () => {
+document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
-        document.getElementById('loading-screen').classList.add('hide');
+        const loader = document.getElementById('loading-screen');
+        if (loader) loader.classList.add('hide');
         createParticles();
         loadStats();
     }, 1200);
@@ -62,6 +63,7 @@ window.addEventListener('load', () => {
 
 function createParticles() {
     const container = document.getElementById('particles');
+    if (!container) return;
     for (let i = 0; i < 20; i++) {
         const p = document.createElement('div');
         p.className = 'particle';

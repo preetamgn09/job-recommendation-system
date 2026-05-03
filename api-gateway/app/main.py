@@ -22,7 +22,7 @@ from typing import Optional
 
 
 app = FastAPI(
-    title="Job Recommendation System — API Gateway",
+    title="NextStep — API Gateway",
     description="Central entry point for the distributed job recommendation system",
     version="1.0.0",
 )
