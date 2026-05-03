@@ -197,15 +197,7 @@ function updateUserUI() {
     document.getElementById('user-initials').textContent = initials;
     document.getElementById('profile-initials').textContent = initials;
     document.getElementById('btn-logout').style.display = 'inline-flex';
-}
 
-document.getElementById('btn-logout').addEventListener('click', () => {
-    currentUser = null;
-    localStorage.removeItem('jrs_user');
-    document.getElementById('btn-logout').style.display = 'none';
-    document.getElementById('user-initials').textContent = '?';
-    showSection('hero');
-});
     document.getElementById('profile-name').textContent = currentUser.name;
     document.getElementById('profile-email').textContent = currentUser.email;
     document.getElementById('profile-experience').textContent = currentUser.experience_years;
@@ -213,6 +205,17 @@ document.getElementById('btn-logout').addEventListener('click', () => {
 
     const skillsEl = document.getElementById('profile-skills');
     skillsEl.innerHTML = (currentUser.skills || []).map(s => `<span class="skill-tag">${s}</span>`).join('');
+}
+
+const btnLogout = document.getElementById('btn-logout');
+if (btnLogout) {
+    btnLogout.addEventListener('click', () => {
+        currentUser = null;
+        localStorage.removeItem('jrs_user');
+        btnLogout.style.display = 'none';
+        document.getElementById('user-initials').textContent = '?';
+        showSection('hero');
+    });
 }
 
 // ── Dashboard ───────────────────────────────────────────────
